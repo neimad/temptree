@@ -49,6 +49,13 @@ True
 </code></pre>
 <h2 id="documentation">Documentation</h2>
 <p><a href="https://neimad.github.io/temptree/">The complete documentation</a> is available from Github Pages.</p>
+<h2 id="development">Development</h2>
+<p>The development tasks are managed using <a href="https://www.pyinvoke.org/">Invoke</a>. Use it to list the available tasks:</p>
+<pre><code>inv -l
+</code></pre>
+<p>Use the <code>pre-commit</code> task within your repository <code>pre-commit</code> hook:</p>
+<pre><code>poetry run invoke pre-commit
+</code></pre>
 <h2 id="contributing">Contributing</h2>
 <p>This project is hosted on <a href="https://github.com/neimad/temptree">Github</a>.</p>
 <p>If you're facing an issue using <a title="temptree" href="#temptree"><code>temptree</code></a>, please look at
@@ -101,6 +108,17 @@ Documentation
 
 [The complete documentation][documentation] is available from Github Pages.
 
+Development
+-----------
+
+The development tasks are managed using [Invoke]. Use it to list the available tasks:
+
+    inv -l
+
+Use the `pre-commit` task within your repository `pre-commit` hook:
+
+    poetry run invoke pre-commit
+
 Contributing
 ------------
 
@@ -117,6 +135,7 @@ License
 `temptree` is licensed under the [GNU GPL 3][GPL] or later.
 
 [documentation]: https://neimad.github.io/temptree/
+[Invoke]: https://www.pyinvoke.org/
 [repository]: https://github.com/neimad/temptree
 [issues]: https://github.com/neimad/temptree/issues
 [pull-requests]: https://github.com/neimad/temptree/pulls
@@ -558,6 +577,7 @@ False
 <ul>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#documentation">Documentation</a></li>
+<li><a href="#development">Development</a></li>
 <li><a href="#contributing">Contributing</a></li>
 <li><a href="#license">License</a></li>
 </ul>

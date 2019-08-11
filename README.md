@@ -39,6 +39,17 @@ Documentation
 
 [The complete documentation][documentation] is available from Github Pages.
 
+Development
+-----------
+
+The development tasks are managed using [Invoke]. Use it to list the available tasks:
+
+    inv -l
+
+Use the `pre-commit` task within your repository `pre-commit` hook:
+
+    poetry run invoke pre-commit
+
 Contributing
 ------------
 
@@ -55,6 +66,7 @@ License
 `temptree` is licensed under the [GNU GPL 3][GPL] or later.
 
 [documentation]: https://neimad.github.io/temptree/
+[Invoke]: https://www.pyinvoke.org/
 [repository]: https://github.com/neimad/temptree
 [issues]: https://github.com/neimad/temptree/issues
 [pull-requests]: https://github.com/neimad/temptree/pulls
