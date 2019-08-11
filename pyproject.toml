@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "temptree"
-version = "0.1.0"
+version = "0.1.1"
 description = "Generates temporary files and directories from a tree"
 license = "GPL-3.0-or-later"
 authors = ["Damien Flament <damien.flament@gmx.com>"]
@@ -14,6 +14,8 @@ classifiers = [
     "Topic :: System :: Filesystems",
     "Topic :: Software Development :: Testing"
 ]
+
+include = ["README.md"]
 
 [tool.poetry.dependencies]
 python = "^3.7"

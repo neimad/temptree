@@ -67,7 +67,7 @@ License
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 
 class TemporaryTree(object):
