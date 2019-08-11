@@ -27,7 +27,6 @@ def get_module_doc():
 def lint(c):
     """Lint the source code"""
     c.run("flake8", hide="out")
-    c.run("doc8", hide="out")
 
 
 @task(name="quick-test")

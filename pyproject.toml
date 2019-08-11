@@ -21,6 +21,7 @@ classifiers = [
 python = "^3.7"
 
 [tool.poetry.dev-dependencies]
+invoke = "^1.3"
 pytest = "^5.0"
 pytest-cov = "^2.7"
 black = {version = "^18.3-alpha.0",allows-prereleases = true}
@@ -30,8 +31,6 @@ pydocstyle = "<4" # Fix `tokenize_open` issue
 flake8-docstrings = "^1.3"
 flake8-import-order = "^0.18.1"
 pdoc3 = "^0.6.3"
-invoke = "^1.3"
-doc8 = "^0.8.0"
 
 [build-system]
 requires = ["poetry>=0.12"]
