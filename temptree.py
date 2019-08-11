@@ -36,6 +36,11 @@ If you just need it within your *doctests*, add it as a development dependency:
 
     poetry add --dev temptree
 
+Documentation
+-------------
+
+[The complete documentation][documentation] is available from Github Pages.
+
 Contributing
 ------------
 
@@ -51,6 +56,7 @@ License
 
 `temptree` is licensed under the [GNU GPL 3][GPL] or later.
 
+[documentation]: https://neimad.github.io/temptree/
 [repository]: https://github.com/neimad/temptree
 [issues]: https://github.com/neimad/temptree/issues
 [pull-requests]: https://github.com/neimad/temptree/pulls
