@@ -7,6 +7,12 @@ from invoke import task
 
 import temptree
 
+DIR = Path(__file__).parent
+DOCS_DIR = DIR / "docs"
+DOCS_TARGET = DOCS_DIR / "index.html"
+NOJEKYLL_TARGET = DOCS_DIR / ".nojekyll"
+README_TARGET = DIR / "README.md"
+
 
 def get_module_doc():
     """Gives the module documentation object."""
@@ -33,27 +39,26 @@ def quick_test(c):
 @task()
 def doc(c):
     """Generates the documentation"""
-    docs = Path(__file__).parent / "docs"
-    target = docs / "index.html"
-    nojekyll = docs / ".nojekyll"
     module = get_module_doc()
 
-    docs.mkdir(parents=True, exist_ok=True)
-    nojekyll.touch()
-    target.touch()
-    target.write_text(module.html())
+    DOCS_DIR.mkdir(parents=True, exist_ok=True)
+    NOJEKYLL_TARGET.touch()
+    DOCS_TARGET.touch()
+    DOCS_TARGET.write_text(module.html())
 
 
 @task
 def readme(c):
     """Generates the readme"""
-    target = Path(__file__).parent / "README.md"
     module = get_module_doc()
 
-    target.touch()
-    target.write_text("\n".join(["temptree", "========", module.docstring]))
+    README_TARGET.touch()
+    README_TARGET.write_text("\n".join(["temptree", "========", module.docstring]))
 
 
 @task(lint, quick_test, doc, readme, name="pre-commit")
 def pre_commit(c):
     """Run tasks required for commiting"""
+    c.run(f"git add {DOCS_TARGET}")
+    c.run(f"git add {NOJEKYLL_TARGET}")
+    c.run(f"git add {README_TARGET}")
