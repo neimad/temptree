@@ -5,7 +5,7 @@ description = "Generates temporary files and directories from a tree"
 license = "GPL-3.0-or-later"
 authors = ["Damien Flament <damien.flament@gmx.com>"]
 repository = "https://github.com/neimad/temptree"
-homepage = "https://github.com/neimad/temptree"
+documentation = "https://neimad.github.io/temptree"
 
 keywords = ["temporary", "filesystem", "doctest"]
 classifiers = [
