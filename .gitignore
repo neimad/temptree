@@ -1,0 +1,16 @@
+__pycache__/
+
+# Package
+/pip-wheel-metadata/
+/*.egg-info/
+
+# Testing
+/.pytest_cache/
+/.hypothesis/
+
+# Coverage
+/.coverage
+/coverage.xml
+
+/README.py
+/module_readme/
