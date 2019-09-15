@@ -228,3 +228,18 @@ class TemporaryTree(object):
 
         """
         self._root.cleanup()
+
+    def __repr__(self):
+        """Represents the tree by the location of its root.
+
+        The `TemporaryTree` is represented by the location of its root in the
+        filesystem :
+
+            >>> tree = TemporaryTree({})
+            >>> repr(tree) == f"<TemporaryTree at {tree.root}>"
+            True
+
+        """
+        class_name = self.__class__.__name__
+
+        return f"<{class_name} at {str(self.root)}>"

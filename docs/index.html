@@ -294,7 +294,22 @@ class TemporaryTree(object):
             False
 
         &#34;&#34;&#34;
-        self._root.cleanup()</code></pre>
+        self._root.cleanup()
+
+    def __repr__(self):
+        &#34;&#34;&#34;Represents the tree by the location of its root.
+
+        The `TemporaryTree` is represented by the location of its root in the
+        filesystem :
+
+            &gt;&gt;&gt; tree = TemporaryTree({})
+            &gt;&gt;&gt; repr(tree) == f&#34;&lt;TemporaryTree at {tree.root}&gt;&#34;
+            True
+
+        &#34;&#34;&#34;
+        class_name = self.__class__.__name__
+
+        return f&#34;&lt;{class_name} at {str(self.root)}&gt;&#34;</code></pre>
 </details>
 </section>
 <section>
@@ -517,7 +532,22 @@ True
             False
 
         &#34;&#34;&#34;
-        self._root.cleanup()</code></pre>
+        self._root.cleanup()
+
+    def __repr__(self):
+        &#34;&#34;&#34;Represents the tree by the location of its root.
+
+        The `TemporaryTree` is represented by the location of its root in the
+        filesystem :
+
+            &gt;&gt;&gt; tree = TemporaryTree({})
+            &gt;&gt;&gt; repr(tree) == f&#34;&lt;TemporaryTree at {tree.root}&gt;&#34;
+            True
+
+        &#34;&#34;&#34;
+        class_name = self.__class__.__name__
+
+        return f&#34;&lt;{class_name} at {str(self.root)}&gt;&#34;</code></pre>
 </details>
 <h3>Instance variables</h3>
 <dl>
