@@ -1,0 +1,38 @@
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v2.3.0
+    hooks:
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: check-case-conflict
+      - id: check-byte-order-marker
+      - id: check-toml
+      - id: check-yaml
+      - id: check-ast
+
+  - repo: local
+    hooks:
+      - id: lint
+        name: Lint Python files
+        language: system
+        entry: poetry run flake8 --format=human
+        pass_filenames: false
+        always_run: true
+      # - id: quick-tests
+      #   name: Runs quick tests
+      #   language: system
+      #   entry: poetry run inv check.quick
+      #   pass_filenames: false
+      #   always_run: true
+      - id: doc
+        name: Generate documentation
+        language: system
+        entry: poetry run inv doc
+        pass_filenames: false
+        always_run: true
+      - id: readme
+        name: Generate the README
+        language: system
+        entry: poetry run inv readme
+        pass_filenames: false
+        always_run: true
