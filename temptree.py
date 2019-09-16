@@ -11,16 +11,29 @@ It is well suited for usage within *doctests* :
 
     >>> from temptree import TemporaryTree
     >>> with TemporaryTree({
-    ...     "foo.py": None,
+    ...     "foo.py": '''
+    ...     import os
+    ...     import sys
+    ...
+    ...     FOO = "foo"
+    ...     ''',
     ...     "bar": {
-    ...         "bar.py": None,
+    ...         "bar.py": '''
+    ...         import foo
+    ...         import pathlib
+    ...
+    ...         def bar():
+    ...             return foo.FOO
+    ...         ''',
     ...         "baz.py": None,
     ...     }
     ... }) as root:
     ...     (root / "foo.py").exists()
     ...     (root / "bar").is_dir()
     ...     (root / "bar" / "bar.py").is_file()
+    ...     (root / "bar" / "baz.py").is_file()
     ...
+    True
     True
     True
     True
@@ -137,6 +150,21 @@ class TemporaryTree(object):
 
     On context completion, the tree is cleaned up.
 
+    Files content
+    -------------
+    The files text content can be given as a value within the files hierarchy
+    specification dictionnary:
+
+        >>> tree = TemporaryTree({"foo.py": '''
+        ... FOO = "foo"
+        ... '''})
+        ...
+        >>> foo = tree / "foo.py"
+        >>> print(foo.read_text())
+        <BLANKLINE>
+        FOO = "foo"
+        <BLANKLINE>
+
     Files mode and access flags
     ---------------------------
 
@@ -144,7 +172,7 @@ class TemporaryTree(object):
     dictionnary:
 
         >>> tree = TemporaryTree({"foo.py": 0o700})
-        >>> foo = tree.root / "foo.py"
+        >>> foo = tree / "foo.py"
         >>> format(foo.stat().st_mode, "o")
         '100700'
 
@@ -161,7 +189,7 @@ class TemporaryTree(object):
     def __init__(self, tree):
         self._root = TemporaryDirectory()
 
-        self._build(self.root, tree)
+        _build_tree(self.root, tree)
 
     @property
     def root(self):
@@ -185,34 +213,6 @@ class TemporaryTree(object):
     def __truediv__(self, other):
         """Uses the slash operator to create childs paths from the root."""
         return self.root.__truediv__(other)
-
-    def _build(self, directory, tree):
-        """Creates the files and directories specified by the `tree` dictionnary.
-
-        Parameters
-        ----------
-        directory: Path
-            The directory to build the files hierarchy in.
-        tree: dict
-            The files hierarchy specification.
-
-        """
-        for name, value in tree.items():
-            if isinstance(value, dict):
-                subdirectory = directory / name
-                subdirectory.mkdir()
-
-                assert subdirectory.exists()
-
-                self._build(subdirectory, value)
-            else:
-                file = directory / name
-                if value:
-                    file.touch(mode=value)
-                else:
-                    file.touch()
-
-                assert file.exists()
 
     def cleanup(self):
         """Cleans up the tree.
@@ -243,3 +243,96 @@ class TemporaryTree(object):
         class_name = self.__class__.__name__
 
         return f"<{class_name} at {str(self.root)}>"
+
+
+def _build_tree(directory, tree):
+    """Creates the files hierarchy specified by the tree.
+
+    Files and directories specified by the `tree` dictionnary are created within the
+    given directory.
+
+    """
+    for name, value in tree.items():
+        if isinstance(value, dict):
+            subdirectory = directory / name
+            subdirectory.mkdir()
+
+            assert subdirectory.exists()
+
+            _build_tree(subdirectory, value)
+        else:
+            file = directory / name
+
+            if value is None:
+                value = (None, None)
+
+            if isinstance(value, (int, str)):
+                value = (value, None)
+
+            _create_file(file, value)
+
+            assert file.exists()
+
+
+def _create_file(file, specification):
+    """Creates the file following the given specification.
+
+    The `file` is created while following the `specification`.
+
+        >>> from tempfile import TemporaryDirectory
+        >>> from pathlib import Path
+
+        >>> tempdir = TemporaryDirectory()
+        >>> dir = Path(tempdir.name)
+        >>> file = dir / "file"
+
+        >>> file.exists()
+        False
+        >>> _create_file(file, (0o711, "file content"))
+        >>> file.exists()
+        True
+        >>> file.read_text()
+        'file content'
+        >>> format(file.stat().st_mode, "o")
+        '100711'
+
+    The specification must be an iterable containing:
+
+     - the file mode as an integer,
+     - the file content as a string.
+
+    If the file mode is not specified, the default from `pathlib.Path.touch` is used:
+
+        >>> file.unlink()
+        >>> _create_file(file, (None, "file content"))
+        >>> file.read_text()
+        'file content'
+        >>> format(file.stat().st_mode, "o")
+        '100644'
+
+    If the file content is not specified, it is left empty:
+
+        >>> file.unlink()
+        >>> _create_file(file, (0o711, None))
+        >>> file.read_text()
+        ''
+        >>> format(file.stat().st_mode, "o")
+        '100711'
+
+    """
+    mode = None
+    content = None
+
+    for value in specification:
+        if isinstance(value, int):
+            mode = value
+        elif isinstance(value, str):
+            content = value
+
+    if mode:
+        file.touch(mode=mode)
+    else:
+        file.touch()
+
+    if content:
+        file.write_text(content)

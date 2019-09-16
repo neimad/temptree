@@ -9,16 +9,29 @@ It is well suited for usage within *doctests* :
 
     >>> from temptree import TemporaryTree
     >>> with TemporaryTree({
-    ...     "foo.py": None,
+    ...     "foo.py": '''
+    ...     import os
+    ...     import sys
+    ...
+    ...     FOO = "foo"
+    ...     ''',
     ...     "bar": {
-    ...         "bar.py": None,
+    ...         "bar.py": '''
+    ...         import foo
+    ...         import pathlib
+    ...
+    ...         def bar():
+    ...             return foo.FOO
+    ...         ''',
     ...         "baz.py": None,
     ...     }
     ... }) as root:
     ...     (root / "foo.py").exists()
     ...     (root / "bar").is_dir()
     ...     (root / "bar" / "bar.py").is_file()
+    ...     (root / "bar" / "baz.py").is_file()
     ...
+    True
     True
     True
     True

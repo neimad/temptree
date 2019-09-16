@@ -26,16 +26,29 @@ root <code>tempfile.TemporaryDirectory</code>.</p>
 <p>It is well suited for usage within <em>doctests</em> :</p>
 <pre><code>&gt;&gt;&gt; from temptree import TemporaryTree
 &gt;&gt;&gt; with TemporaryTree({
-...     "foo.py": None,
+...     "foo.py": '''
+...     import os
+...     import sys
+...
+...     FOO = "foo"
+...     ''',
 ...     "bar": {
-...         "bar.py": None,
+...         "bar.py": '''
+...         import foo
+...         import pathlib
+...
+...         def bar():
+...             return foo.FOO
+...         ''',
 ...         "baz.py": None,
 ...     }
 ... }) as root:
 ...     (root / "foo.py").exists()
 ...     (root / "bar").is_dir()
 ...     (root / "bar" / "bar.py").is_file()
+...     (root / "bar" / "baz.py").is_file()
 ...
+True
 True
 True
 True
@@ -78,16 +91,29 @@ It is well suited for usage within *doctests* :
 
     &gt;&gt;&gt; from temptree import TemporaryTree
     &gt;&gt;&gt; with TemporaryTree({
-    ...     &#34;foo.py&#34;: None,
+    ...     &#34;foo.py&#34;: &#39;&#39;&#39;
+    ...     import os
+    ...     import sys
+    ...
+    ...     FOO = &#34;foo&#34;
+    ...     &#39;&#39;&#39;,
     ...     &#34;bar&#34;: {
-    ...         &#34;bar.py&#34;: None,
+    ...         &#34;bar.py&#34;: &#39;&#39;&#39;
+    ...         import foo
+    ...         import pathlib
+    ...
+    ...         def bar():
+    ...             return foo.FOO
+    ...         &#39;&#39;&#39;,
     ...         &#34;baz.py&#34;: None,
     ...     }
     ... }) as root:
     ...     (root / &#34;foo.py&#34;).exists()
     ...     (root / &#34;bar&#34;).is_dir()
     ...     (root / &#34;bar&#34; / &#34;bar.py&#34;).is_file()
+    ...     (root / &#34;bar&#34; / &#34;baz.py&#34;).is_file()
     ...
+    True
     True
     True
     True
@@ -204,6 +230,21 @@ class TemporaryTree(object):
 
     On context completion, the tree is cleaned up.
 
+    Files content
+    -------------
+    The files text content can be given as a value within the files hierarchy
+    specification dictionnary:
+
+        &gt;&gt;&gt; tree = TemporaryTree({&#34;foo.py&#34;: &#39;&#39;&#39;
+        ... FOO = &#34;foo&#34;
+        ... &#39;&#39;&#39;})
+        ...
+        &gt;&gt;&gt; foo = tree / &#34;foo.py&#34;
+        &gt;&gt;&gt; print(foo.read_text())
+        &lt;BLANKLINE&gt;
+        FOO = &#34;foo&#34;
+        &lt;BLANKLINE&gt;
+
     Files mode and access flags
     ---------------------------
 
@@ -211,7 +252,7 @@ class TemporaryTree(object):
     dictionnary:
 
         &gt;&gt;&gt; tree = TemporaryTree({&#34;foo.py&#34;: 0o700})
-        &gt;&gt;&gt; foo = tree.root / &#34;foo.py&#34;
+        &gt;&gt;&gt; foo = tree / &#34;foo.py&#34;
         &gt;&gt;&gt; format(foo.stat().st_mode, &#34;o&#34;)
         &#39;100700&#39;
 
@@ -228,7 +269,7 @@ class TemporaryTree(object):
     def __init__(self, tree):
         self._root = TemporaryDirectory()
 
-        self._build(self.root, tree)
+        _build_tree(self.root, tree)
 
     @property
     def root(self):
@@ -252,34 +293,6 @@ class TemporaryTree(object):
     def __truediv__(self, other):
         &#34;&#34;&#34;Uses the slash operator to create childs paths from the root.&#34;&#34;&#34;
         return self.root.__truediv__(other)
-
-    def _build(self, directory, tree):
-        &#34;&#34;&#34;Creates the files and directories specified by the `tree` dictionnary.
-
-        Parameters
-        ----------
-        directory: Path
-            The directory to build the files hierarchy in.
-        tree: dict
-            The files hierarchy specification.
-
-        &#34;&#34;&#34;
-        for name, value in tree.items():
-            if isinstance(value, dict):
-                subdirectory = directory / name
-                subdirectory.mkdir()
-
-                assert subdirectory.exists()
-
-                self._build(subdirectory, value)
-            else:
-                file = directory / name
-                if value:
-                    file.touch(mode=value)
-                else:
-                    file.touch()
-
-                assert file.exists()
 
     def cleanup(self):
         &#34;&#34;&#34;Cleans up the tree.
@@ -309,7 +322,100 @@ class TemporaryTree(object):
         &#34;&#34;&#34;
         class_name = self.__class__.__name__
 
-        return f&#34;&lt;{class_name} at {str(self.root)}&gt;&#34;</code></pre>
+        return f&#34;&lt;{class_name} at {str(self.root)}&gt;&#34;
+
+
+def _build_tree(directory, tree):
+    &#34;&#34;&#34;Creates the files hierarchy specified by the tree.
+
+    Files and directories specified by the `tree` dictionnary are created within the
+    given directory.
+
+    &#34;&#34;&#34;
+    for name, value in tree.items():
+        if isinstance(value, dict):
+            subdirectory = directory / name
+            subdirectory.mkdir()
+
+            assert subdirectory.exists()
+
+            _build_tree(subdirectory, value)
+        else:
+            file = directory / name
+
+            if value is None:
+                value = (None, None)
+
+            if isinstance(value, (int, str)):
+                value = (value, None)
+
+            _create_file(file, value)
+
+            assert file.exists()
+
+
+def _create_file(file, specification):
+    &#34;&#34;&#34;Creates the file following the given specification.
+
+    The `file` is created while following the `specification`.
+
+        &gt;&gt;&gt; from tempfile import TemporaryDirectory
+        &gt;&gt;&gt; from pathlib import Path
+
+        &gt;&gt;&gt; tempdir = TemporaryDirectory()
+        &gt;&gt;&gt; dir = Path(tempdir.name)
+        &gt;&gt;&gt; file = dir / &#34;file&#34;
+
+        &gt;&gt;&gt; file.exists()
+        False
+        &gt;&gt;&gt; _create_file(file, (0o711, &#34;file content&#34;))
+        &gt;&gt;&gt; file.exists()
+        True
+        &gt;&gt;&gt; file.read_text()
+        &#39;file content&#39;
+        &gt;&gt;&gt; format(file.stat().st_mode, &#34;o&#34;)
+        &#39;100711&#39;
+
+    The specification must be an iterable containing:
+
+     - the file mode as an integer,
+     - the file content as a string.
+
+    If the file mode is not specified, the default from `pathlib.Path.touch` is used:
+
+        &gt;&gt;&gt; file.unlink()
+        &gt;&gt;&gt; _create_file(file, (None, &#34;file content&#34;))
+        &gt;&gt;&gt; file.read_text()
+        &#39;file content&#39;
+        &gt;&gt;&gt; format(file.stat().st_mode, &#34;o&#34;)
+        &#39;100644&#39;
+
+    If the file content is not specified, it is left empty:
+
+        &gt;&gt;&gt; file.unlink()
+        &gt;&gt;&gt; _create_file(file, (0o711, None))
+        &gt;&gt;&gt; file.read_text()
+        &#39;&#39;
+        &gt;&gt;&gt; format(file.stat().st_mode, &#34;o&#34;)
+        &#39;100711&#39;
+
+    &#34;&#34;&#34;
+    mode = None
+    content = None
+
+    for value in specification:
+        if isinstance(value, int):
+            mode = value
+        elif isinstance(value, str):
+            content = value
+
+    if mode:
+        file.touch(mode=mode)
+    else:
+        file.touch()
+
+    if content:
+        file.write_text(content)</code></pre>
 </details>
 </section>
 <section>
@@ -370,11 +476,24 @@ False
 True
 </code></pre>
 <p>On context completion, the tree is cleaned up.</p>
+<h2 id="files-content">Files content</h2>
+<p>The files text content can be given as a value within the files hierarchy
+specification dictionnary:</p>
+<pre><code>&gt;&gt;&gt; tree = TemporaryTree({"foo.py": '''
+... FOO = "foo"
+... '''})
+...
+&gt;&gt;&gt; foo = tree / "foo.py"
+&gt;&gt;&gt; print(foo.read_text())
+&lt;BLANKLINE&gt;
+FOO = "foo"
+&lt;BLANKLINE&gt;
+</code></pre>
 <h2 id="files-mode-and-access-flags">Files mode and access flags</h2>
 <p>The files mode can be specified as a value within the files hierarchy specification
 dictionnary:</p>
 <pre><code>&gt;&gt;&gt; tree = TemporaryTree({"foo.py": 0o700})
-&gt;&gt;&gt; foo = tree.root / "foo.py"
+&gt;&gt;&gt; foo = tree / "foo.py"
 &gt;&gt;&gt; format(foo.stat().st_mode, "o")
 '100700'
 </code></pre>
@@ -442,6 +561,21 @@ True
 
     On context completion, the tree is cleaned up.
 
+    Files content
+    -------------
+    The files text content can be given as a value within the files hierarchy
+    specification dictionnary:
+
+        &gt;&gt;&gt; tree = TemporaryTree({&#34;foo.py&#34;: &#39;&#39;&#39;
+        ... FOO = &#34;foo&#34;
+        ... &#39;&#39;&#39;})
+        ...
+        &gt;&gt;&gt; foo = tree / &#34;foo.py&#34;
+        &gt;&gt;&gt; print(foo.read_text())
+        &lt;BLANKLINE&gt;
+        FOO = &#34;foo&#34;
+        &lt;BLANKLINE&gt;
+
     Files mode and access flags
     ---------------------------
 
@@ -449,7 +583,7 @@ True
     dictionnary:
 
         &gt;&gt;&gt; tree = TemporaryTree({&#34;foo.py&#34;: 0o700})
-        &gt;&gt;&gt; foo = tree.root / &#34;foo.py&#34;
+        &gt;&gt;&gt; foo = tree / &#34;foo.py&#34;
         &gt;&gt;&gt; format(foo.stat().st_mode, &#34;o&#34;)
         &#39;100700&#39;
 
@@ -466,7 +600,7 @@ True
     def __init__(self, tree):
         self._root = TemporaryDirectory()
 
-        self._build(self.root, tree)
+        _build_tree(self.root, tree)
 
     @property
     def root(self):
@@ -490,34 +624,6 @@ True
     def __truediv__(self, other):
         &#34;&#34;&#34;Uses the slash operator to create childs paths from the root.&#34;&#34;&#34;
         return self.root.__truediv__(other)
-
-    def _build(self, directory, tree):
-        &#34;&#34;&#34;Creates the files and directories specified by the `tree` dictionnary.
-
-        Parameters
-        ----------
-        directory: Path
-            The directory to build the files hierarchy in.
-        tree: dict
-            The files hierarchy specification.
-
-        &#34;&#34;&#34;
-        for name, value in tree.items():
-            if isinstance(value, dict):
-                subdirectory = directory / name
-                subdirectory.mkdir()
-
-                assert subdirectory.exists()
-
-                self._build(subdirectory, value)
-            else:
-                file = directory / name
-                if value:
-                    file.touch(mode=value)
-                else:
-                    file.touch()
-
-                assert file.exists()
 
     def cleanup(self):
         &#34;&#34;&#34;Cleans up the tree.
