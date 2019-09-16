@@ -18,21 +18,9 @@ repos:
         entry: poetry run flake8 --format=human
         pass_filenames: false
         always_run: true
-      # - id: quick-tests
-      #   name: Runs quick tests
-      #   language: system
-      #   entry: poetry run inv check.quick
-      #   pass_filenames: false
-      #   always_run: true
-      - id: doc
-        name: Generate documentation
+      - id: quick-tests
+        name: Runs quick tests
         language: system
-        entry: poetry run inv doc
-        pass_filenames: false
-        always_run: true
-      - id: readme
-        name: Generate the README
-        language: system
-        entry: poetry run inv readme
+        entry: poetry run pytest
         pass_filenames: false
         always_run: true
