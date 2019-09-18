@@ -25,13 +25,23 @@
 root <code>tempfile.TemporaryDirectory</code>.</p>
 <p>It is well suited for usage within <em>doctests</em> :</p>
 <pre><code>&gt;&gt;&gt; from temptree import TemporaryTree
-&gt;&gt;&gt; with TemporaryTree({
-...     "foo.py": '''
+
+&gt;&gt;&gt; with TemporaryTree(["foo.py", "bar.py"]) as root:
+...     (root / "foo.py").is_file()
+...     (root / "bar.py").is_file()
+...
+True
+True
+</code></pre>
+<p>A complete file hierarchy can be easily created, including text files content and files
+mode:</p>
+<pre><code>&gt;&gt;&gt; with TemporaryTree({
+...     "foo.py": ('''
 ...     import os
 ...     import sys
 ...
 ...     FOO = "foo"
-...     ''',
+...     ''', 0o700),
 ...     "bar": {
 ...         "bar.py": '''
 ...         import foo
@@ -90,13 +100,24 @@ root `tempfile.TemporaryDirectory`.
 It is well suited for usage within *doctests* :
 
     &gt;&gt;&gt; from temptree import TemporaryTree
+
+    &gt;&gt;&gt; with TemporaryTree([&#34;foo.py&#34;, &#34;bar.py&#34;]) as root:
+    ...     (root / &#34;foo.py&#34;).is_file()
+    ...     (root / &#34;bar.py&#34;).is_file()
+    ...
+    True
+    True
+
+A complete file hierarchy can be easily created, including text files content and files
+mode:
+
     &gt;&gt;&gt; with TemporaryTree({
-    ...     &#34;foo.py&#34;: &#39;&#39;&#39;
+    ...     &#34;foo.py&#34;: (&#39;&#39;&#39;
     ...     import os
     ...     import sys
     ...
     ...     FOO = &#34;foo&#34;
-    ...     &#39;&#39;&#39;,
+    ...     &#39;&#39;&#39;, 0o700),
     ...     &#34;bar&#34;: {
     ...         &#34;bar.py&#34;: &#39;&#39;&#39;
     ...         import foo
@@ -175,6 +196,15 @@ from tempfile import TemporaryDirectory
 
 class TemporaryTree(object):
     &#34;&#34;&#34;A tree of files and directories located in a `pathlib.TemporaryDirectory`.
+
+    To build a list of files, just specify their names in a list:
+
+    &gt;&gt;&gt; with TemporaryTree([&#34;foo.py&#34;, &#34;bar.py&#34;]) as root:
+    ...     (root / &#34;foo.py&#34;).is_file()
+    ...     (root / &#34;bar.py&#34;).is_file()
+    ...
+    True
+    True
 
     To build a hierarchy of files and directories, use nested dictionnaries:
 
@@ -331,9 +361,18 @@ def _build_tree(directory, tree):
     Files and directories specified by the `tree` dictionnary are created within the
     given directory.
 
+    If the tree is a list, its element are taken as the keys in the tree dictionnary.
+
+    If a value is a list or a dictionnary, it is taken as a subtree under a subdirectory
+    whose the name is the related key.
+
     &#34;&#34;&#34;
+
+    if isinstance(tree, list):
+        tree = {name: None for name in tree}
+
     for name, value in tree.items():
-        if isinstance(value, dict):
+        if isinstance(value, (list, dict)):
             subdirectory = directory / name
             subdirectory.mkdir()
 
@@ -345,8 +384,7 @@ def _build_tree(directory, tree):
 
             if value is None:
                 value = (None, None)
-
-            if isinstance(value, (int, str)):
+            elif isinstance(value, (int, str)):
                 value = (value, None)
 
             _create_file(file, value)
@@ -369,7 +407,7 @@ def _create_file(file, specification):
         &gt;&gt;&gt; file.exists()
         False
         &gt;&gt;&gt; _create_file(file, (0o711, &#34;file content&#34;))
-        &gt;&gt;&gt; file.exists()
+        &gt;&gt;&gt; file.is_file()
         True
         &gt;&gt;&gt; file.read_text()
         &#39;file content&#39;
@@ -433,6 +471,14 @@ def _create_file(file, specification):
 </code></dt>
 <dd>
 <section class="desc"><p>A tree of files and directories located in a <code>pathlib.TemporaryDirectory</code>.</p>
+<p>To build a list of files, just specify their names in a list:</p>
+<pre><code>&gt;&gt;&gt; with TemporaryTree(["foo.py", "bar.py"]) as root:
+...     (root / "foo.py").is_file()
+...     (root / "bar.py").is_file()
+...
+True
+</code></pre>
+<p>True</p>
 <p>To build a hierarchy of files and directories, use nested dictionnaries:</p>
 <pre><code>&gt;&gt;&gt; tree = TemporaryTree({
 ...     "foo.py": None,
@@ -506,6 +552,15 @@ True
 <summary>Source code</summary>
 <pre><code class="python">class TemporaryTree(object):
     &#34;&#34;&#34;A tree of files and directories located in a `pathlib.TemporaryDirectory`.
+
+    To build a list of files, just specify their names in a list:
+
+    &gt;&gt;&gt; with TemporaryTree([&#34;foo.py&#34;, &#34;bar.py&#34;]) as root:
+    ...     (root / &#34;foo.py&#34;).is_file()
+    ...     (root / &#34;bar.py&#34;).is_file()
+    ...
+    True
+    True
 
     To build a hierarchy of files and directories, use nested dictionnaries:
 

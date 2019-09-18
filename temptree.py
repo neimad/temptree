@@ -10,13 +10,24 @@ root `tempfile.TemporaryDirectory`.
 It is well suited for usage within *doctests* :
 
     >>> from temptree import TemporaryTree
+
+    >>> with TemporaryTree(["foo.py", "bar.py"]) as root:
+    ...     (root / "foo.py").is_file()
+    ...     (root / "bar.py").is_file()
+    ...
+    True
+    True
+
+A complete file hierarchy can be easily created, including text files content and files
+mode:
+
     >>> with TemporaryTree({
-    ...     "foo.py": '''
+    ...     "foo.py": ('''
     ...     import os
     ...     import sys
     ...
     ...     FOO = "foo"
-    ...     ''',
+    ...     ''', 0o700),
     ...     "bar": {
     ...         "bar.py": '''
     ...         import foo
@@ -95,6 +106,15 @@ from tempfile import TemporaryDirectory
 
 class TemporaryTree(object):
     """A tree of files and directories located in a `pathlib.TemporaryDirectory`.
+
+    To build a list of files, just specify their names in a list:
+
+    >>> with TemporaryTree(["foo.py", "bar.py"]) as root:
+    ...     (root / "foo.py").is_file()
+    ...     (root / "bar.py").is_file()
+    ...
+    True
+    True
 
     To build a hierarchy of files and directories, use nested dictionnaries:
 
@@ -251,9 +271,17 @@ def _build_tree(directory, tree):
     Files and directories specified by the `tree` dictionnary are created within the
     given directory.
 
+    If the tree is a list, its element are taken as the keys in the tree dictionnary.
+
+    If a value is a list or a dictionnary, it is taken as a subtree under a subdirectory
+    whose the name is the related key.
+
     """
+    if isinstance(tree, list):
+        tree = {name: None for name in tree}
+
     for name, value in tree.items():
-        if isinstance(value, dict):
+        if isinstance(value, (list, dict)):
             subdirectory = directory / name
             subdirectory.mkdir()
 
@@ -265,8 +293,7 @@ def _build_tree(directory, tree):
 
             if value is None:
                 value = (None, None)
-
-            if isinstance(value, (int, str)):
+            elif isinstance(value, (int, str)):
                 value = (value, None)
 
             _create_file(file, value)
@@ -289,7 +316,7 @@ def _create_file(file, specification):
         >>> file.exists()
         False
         >>> _create_file(file, (0o711, "file content"))
-        >>> file.exists()
+        >>> file.is_file()
         True
         >>> file.read_text()
         'file content'

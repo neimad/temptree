@@ -8,13 +8,24 @@ root `tempfile.TemporaryDirectory`.
 It is well suited for usage within *doctests* :
 
     >>> from temptree import TemporaryTree
+
+    >>> with TemporaryTree(["foo.py", "bar.py"]) as root:
+    ...     (root / "foo.py").is_file()
+    ...     (root / "bar.py").is_file()
+    ...
+    True
+    True
+
+A complete file hierarchy can be easily created, including text files content and files
+mode:
+
     >>> with TemporaryTree({
-    ...     "foo.py": '''
+    ...     "foo.py": ('''
     ...     import os
     ...     import sys
     ...
     ...     FOO = "foo"
-    ...     ''',
+    ...     ''', 0o700),
     ...     "bar": {
     ...         "bar.py": '''
     ...         import foo
