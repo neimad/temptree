@@ -100,6 +100,7 @@ License
 
 """
 
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
@@ -265,6 +266,48 @@ class TemporaryTree(object):
         return f"<{class_name} at {str(self.root)}>"
 
 
+class FilenameError(ValueError):
+    """Inappropriate file name."""
+
+
+def _check_filename(filename):
+    """Checks if a filename is appropriate.
+
+    The given `filename` is checked. A filename is forbiden when:
+
+     - it is empty,
+     - it is the constant string refering to the current directory for the current OS,
+     - it is the constant string refering to the parent directory for the current OS,
+     - it contains a path components separator,
+     - it contains a null byte.
+
+    """
+    NULL_BYTE = "\0"
+
+    if len(filename) == 0:
+        raise FilenameError("Can not create a file with an empty name")
+
+    if filename in (os.curdir, os.pardir):
+        raise FilenameError(f"Can not create a file whose name is `{filename}`")
+
+    if os.sep in filename:
+        raise FilenameError(
+            f"Can not create a file whose name contains "
+            "a path components separator `{os.sep}`"
+        )
+
+    if os.altsep and os.altsep in filename:
+        raise FilenameError(
+            f"Can not create a file whose name contains "
+            "a path components separator `{os.altsep}`"
+        )
+
+    if NULL_BYTE in filename:
+        raise FilenameError(
+            f"Can not create a file whose name contains a null byte `{NULL_BYTE}`"
+        )
+
+
 def _build_tree(directory, tree):
     """Creates the files hierarchy specified by the tree.
 
@@ -281,6 +324,8 @@ def _build_tree(directory, tree):
         tree = {name: None for name in tree}
 
     for name, value in tree.items():
+        _check_filename(name)
+
         if isinstance(value, (list, dict)):
             subdirectory = directory / name
             subdirectory.mkdir()
@@ -347,19 +392,19 @@ def _create_file(file, specification):
         '100711'
 
     """
-    mode = None
     content = None
+    mode = None
 
     for value in specification:
-        if isinstance(value, int):
-            mode = value
-        elif isinstance(value, str):
+        if isinstance(value, str):
             content = value
+        elif isinstance(value, int):
+            mode = value
 
-    if mode:
-        file.touch(mode=mode)
-    else:
-        file.touch()
+    file.touch()
 
     if content:
         file.write_text(content)
+
+    if mode:
+        file.chmod(mode)
