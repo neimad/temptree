@@ -1,12 +1,19 @@
 from os import altsep, curdir, pardir, sep
 
 from hypothesis import HealthCheck, given, settings
-from hypothesis.strategies import (characters, composite, deferred,
-                                   dictionaries, integers, lists, none, one_of,
-                                   text)
-from pytest import raises
+from hypothesis.strategies import (
+    characters,
+    composite,
+    deferred,
+    dictionaries,
+    integers,
+    lists,
+    none,
+    one_of,
+    text,
+)
 
-from temptree import FilenameError, TemporaryTree
+from temptree import TemporaryTree
 
 
 @composite
@@ -111,31 +118,6 @@ directory_specs = deferred(
 
 
 trees = filenames_lists() | directory_specs
-
-
-def test_empty_filename_is_forbiden():
-    with raises(FilenameError):
-        TemporaryTree([""])
-
-
-def test_current_directory_as_filename_is_forbiden():
-    with raises(FilenameError):
-        TemporaryTree([curdir])
-
-
-def test_parent_directory_as_filename_is_forbiden():
-    with raises(FilenameError):
-        TemporaryTree([pardir])
-
-
-def test_path_components_separator_in_filename_is_forbiden():
-    with raises(FilenameError):
-        TemporaryTree([sep])
-
-
-def test_null_byte_in_filename_is_forbiden():
-    with raises(FilenameError):
-        TemporaryTree(["\0"])
 
 
 @settings(suppress_health_check=[HealthCheck.too_slow])

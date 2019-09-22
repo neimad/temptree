@@ -271,15 +271,53 @@ class FilenameError(ValueError):
 
 
 def _check_filename(filename):
-    """Checks if a filename is appropriate.
+    r"""Checks if a filename is appropriate.
 
-    The given `filename` is checked. A filename is forbiden when:
+    Empty filenames are forbiden:
 
-     - it is empty,
-     - it is the constant string refering to the current directory for the current OS,
-     - it is the constant string refering to the parent directory for the current OS,
-     - it contains a path components separator,
-     - it contains a null byte.
+        >>> _check_filename("")
+        Traceback (most recent call last):
+        ...
+        temptree.FilenameError: Can not create a file with an empty name
+
+    Current directory as filename is forbiden:
+
+        >>> from os import curdir
+
+        >>> _check_filename(curdir)
+        Traceback (most recent call last):
+        ...
+        temptree.FilenameError: Can not create a file whose name is `...`
+
+    Parent directory as filename is forbiden:
+
+        >>> from os import pardir
+
+        >>> _check_filename(pardir)
+        Traceback (most recent call last):
+        ...
+        temptree.FilenameError: Can not create a file whose name is `...`
+
+    Filenames containing path components separator are forbiden:
+
+        >>> from os import sep, altsep
+
+        >>> _check_filename(sep)
+        Traceback (most recent call last):
+        ...
+        temptree.FilenameError: Can not create a file whose name contains `...`
+
+        >>> _check_filename(altsep) # doctest: +SKIP
+        Traceback (most recent call last):
+        ...
+        temptree.FilenameError: Can not create a file whose name contains `...`
+
+    Filenames containing a null byte are forbiden:
+
+        >>> _check_filename("\0")
+        Traceback (most recent call last):
+        ...
+        temptree.FilenameError: Can not create a file whose name contains a null byte
 
     """
     NULL_BYTE = "\0"
@@ -291,21 +329,13 @@ def _check_filename(filename):
         raise FilenameError(f"Can not create a file whose name is `{filename}`")
 
     if os.sep in filename:
-        raise FilenameError(
-            f"Can not create a file whose name contains "
-            "a path components separator `{os.sep}`"
-        )
+        raise FilenameError(f"Can not create a file whose name contains `{os.sep}`")
 
     if os.altsep and os.altsep in filename:
-        raise FilenameError(
-            f"Can not create a file whose name contains "
-            "a path components separator `{os.altsep}`"
-        )
+        raise FilenameError(f"Can not create a file whose name contains `{os.altsep}`")
 
     if NULL_BYTE in filename:
-        raise FilenameError(
-            f"Can not create a file whose name contains a null byte `{NULL_BYTE}`"
-        )
+        raise FilenameError(f"Can not create a file whose name contains a null byte")
 
 
 def _build_tree(directory, tree):
