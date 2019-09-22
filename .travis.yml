@@ -1,0 +1,15 @@
+language: python
+python:
+  - 3.7
+env:
+  - HYPOTHESIS_MAX_EXAMPLES=1_000_000
+
+before_install:
+  - pip install poetry
+
+install:
+  - poetry install
+
+script:
+  - umask
+  - inv test
