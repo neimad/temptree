@@ -406,15 +406,18 @@ def _create_file(file, specification):
     If the file mode is not specified, the default from `pathlib.Path.touch` is used:
 
         >>> file.unlink()
+        >>> from os import umask
+
         >>> _create_file(file, (None, "file content"))
         >>> file.read_text()
         'file content'
-        >>> format(file.stat().st_mode, "o")
-        '100644'
+        >>> file.stat().st_mode == 0o100666 - umask(0)
+        True
 
     If the file content is not specified, it is left empty:
 
         >>> file.unlink()
+
         >>> _create_file(file, (0o711, None))
         >>> file.read_text()
         ''
