@@ -21,6 +21,10 @@
 </header>
 <section id="section-intro">
 <p>Generates temporary files and directories from a tree.</p>
+<p><a href="https://travis-ci.org/neimad/temptree"><img alt="Build Status" src="https://img.shields.io/travis/neimad/temptree?style=flat-square"></a>
+<a href="https://pypi.org/project/temptree/"><img alt="PyPI" src="https://img.shields.io/pypi/v/temptree?style=flat-square"></a>
+<a href="https://pypi.org/project/temptree/"><img alt="Python Version" src="https://img.shields.io/pypi/pyversions/temptree?style=flat-square"></a>
+<a href="https://github.com/neimad/temptree/blob/master/LICENSE.md"><img alt="License" src="https://img.shields.io/github/license/neimad/temptree?style=flat-square"></a></p>
 <p>The provided <a title="temptree.TemporaryTree" href="#temptree.TemporaryTree"><code>TemporaryTree</code></a> class allows to create complete files hierarchies under a
 root <code>tempfile.TemporaryDirectory</code>.</p>
 <p>It is well suited for usage within <em>doctests</em> :</p>
@@ -93,6 +97,11 @@ True
 # This file is part of temptree.
 
 &#34;&#34;&#34;Generates temporary files and directories from a tree.
+
+[![Build Status][ci-badge]][ci]
+[![PyPI][pypi-badge]][package]
+[![Python Version][py-versions-badge]][package]
+[![License][license-badge]][license]
 
 The provided `TemporaryTree` class allows to create complete files hierarchies under a
 root `tempfile.TemporaryDirectory`.
@@ -181,6 +190,13 @@ License
 
 `temptree` is licensed under the [GNU GPL 3][GPL] or later.
 
+[ci]: https://travis-ci.org/neimad/temptree
+[package]: https://pypi.org/project/temptree/
+[ci-badge]: https://img.shields.io/travis/neimad/temptree?style=flat-square
+[py-versions-badge]: https://img.shields.io/pypi/pyversions/temptree?style=flat-square
+[pypi-badge]: https://img.shields.io/pypi/v/temptree?style=flat-square
+[license]: https://github.com/neimad/temptree/blob/master/LICENSE.md
+[license-badge]: https://img.shields.io/github/license/neimad/temptree?style=flat-square
 [documentation]: https://neimad.github.io/temptree/
 [Invoke]: https://www.pyinvoke.org/
 [repository]: https://github.com/neimad/temptree
@@ -496,15 +512,18 @@ def _create_file(file, specification):
     If the file mode is not specified, the default from `pathlib.Path.touch` is used:
 
         &gt;&gt;&gt; file.unlink()
+        &gt;&gt;&gt; from os import umask
+
         &gt;&gt;&gt; _create_file(file, (None, &#34;file content&#34;))
         &gt;&gt;&gt; file.read_text()
         &#39;file content&#39;
-        &gt;&gt;&gt; format(file.stat().st_mode, &#34;o&#34;)
-        &#39;100644&#39;
+        &gt;&gt;&gt; file.stat().st_mode == 0o100666 - umask(0)
+        True
 
     If the file content is not specified, it is left empty:
 
         &gt;&gt;&gt; file.unlink()
+
         &gt;&gt;&gt; _create_file(file, (0o711, None))
         &gt;&gt;&gt; file.read_text()
         &#39;&#39;

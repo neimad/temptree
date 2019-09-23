@@ -4,6 +4,11 @@
 
 """Generates temporary files and directories from a tree.
 
+[![Build Status][ci-badge]][ci]
+[![PyPI][pypi-badge]][package]
+[![Python Version][py-versions-badge]][package]
+[![License][license-badge]][license]
+
 The provided `TemporaryTree` class allows to create complete files hierarchies under a
 root `tempfile.TemporaryDirectory`.
 
@@ -91,6 +96,13 @@ License
 
 `temptree` is licensed under the [GNU GPL 3][GPL] or later.
 
+[ci]: https://travis-ci.org/neimad/temptree
+[package]: https://pypi.org/project/temptree/
+[ci-badge]: https://img.shields.io/travis/neimad/temptree?style=flat-square
+[py-versions-badge]: https://img.shields.io/pypi/pyversions/temptree?style=flat-square
+[pypi-badge]: https://img.shields.io/pypi/v/temptree?style=flat-square
+[license]: https://github.com/neimad/temptree/blob/master/LICENSE.md
+[license-badge]: https://img.shields.io/github/license/neimad/temptree?style=flat-square
 [documentation]: https://neimad.github.io/temptree/
 [Invoke]: https://www.pyinvoke.org/
 [repository]: https://github.com/neimad/temptree
