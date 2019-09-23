@@ -6,7 +6,9 @@ cache:
 
 python:
   - 3.7
+  - 3.6
 env:
+  - HYPOTHESIS_MAX_EXAMPLES=100
   - HYPOTHESIS_MAX_EXAMPLES=100_000
 
 before_install:
