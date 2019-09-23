@@ -1,5 +1,8 @@
 language: python
-cache: pip
+cache:
+  pip: true
+  directories:
+    - .hypothesis
 
 python:
   - 3.7
