@@ -16,4 +16,5 @@ install:
   - poetry install
 
 script:
+  - inv lint
   - travis_wait inv test
