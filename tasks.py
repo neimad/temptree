@@ -41,21 +41,3 @@ def readme(c):
 
     README_TARGET.touch()
     README_TARGET.write_text("\n".join(["temptree", "========", module.docstring]))
-
-
-@task
-def lint(c):
-    """Lints the source code."""
-    c.run("flake8 --format=human")
-
-
-@task(name="quick-test")
-def quick_test(c):
-    """Runs quick tests."""
-    c.run("pytest --color=yes temptree.py")
-
-
-@task
-def test(c):
-    """Runs the tests."""
-    c.run("pytest --color=yes --hypothesis-show-statistics")

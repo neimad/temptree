@@ -21,12 +21,6 @@ repos:
       - id: lint
         name: Lint Python files
         language: system
-        entry: poetry run inv lint
-        pass_filenames: false
-        always_run: true
-      - id: quick-tests
-        name: Runs quick tests
-        language: system
-        entry: poetry run inv quick-test
+        entry: poetry run flake8
         pass_filenames: false
         always_run: true

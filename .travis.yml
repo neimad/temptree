@@ -1,22 +1,47 @@
-language: python
-cache:
-  pip: true
-  directories:
-    - .hypothesis
+language: shell
 
-python:
-  - 3.7
-  - 3.6
+os:
+  - linux
+  - osx
+  - windows
+
+osx_image: xcode11
+
 env:
-  - HYPOTHESIS_MAX_EXAMPLES=100
-  - HYPOTHESIS_MAX_EXAMPLES=100_000
+  matrix:
+    - PYTHON="3.7" HYPOTHESIS_MAX_EXAMPLES=100
+    - PYTHON="3.6" HYPOTHESIS_MAX_EXAMPLES=100
+    # - PYTHON="3.7" HYPOTHESIS_MAX_EXAMPLES=100_000
+    # - PYTHON="3.6" HYPOTHESIS_MAX_EXAMPLES=100_000
+  global:
+    - CACHE=$HOME/cache
+    - PYENV_ROOT=$CACHE/pyenv
+    - PIP_CACHE_DIR=$CACHE/pip
+    - VENVS_DIR=$CACHE/virtualenvs
+    - PRE_COMMIT_HOME=$CACHE/pre-commit
+    - HYPOTHESIS_STORAGE_DIRECTORY=$CACHE/hypothesis
 
 before_install:
+  # Install Python
+  - source travis-python.bash
+  - install_python $CACHE/Python $PYTHON
+  # Upgrade Pip
+  - python -m pip install -U pip
+  # Install Poetry
   - pip install poetry
+  - poetry config settings.virtualenvs.path "$VENVS_DIR"
 
 install:
   - poetry install
+  - poetry debug:info
 
 script:
-  - inv lint
-  - travis_wait inv test
+  - poetry run pre-commit run -a
+  - travis_wait poetry run pytest
+
+cache:
+  directories:
+    - $CACHE
+
+before_cache:
+  - poetry run pre-commit gc
