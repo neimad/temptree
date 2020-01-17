@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<meta name="generator" content="pdoc 0.6.3" />
+<meta name="generator" content="pdoc 0.6.4" />
 <title>temptree API documentation</title>
 <meta name="description" content="Generates temporary files and directories from a tree …" />
 <link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
@@ -25,8 +25,8 @@
 <a href="https://pypi.org/project/temptree/"><img alt="PyPI" src="https://img.shields.io/pypi/v/temptree?style=flat-square"></a>
 <a href="https://pypi.org/project/temptree/"><img alt="Python Version" src="https://img.shields.io/pypi/pyversions/temptree?style=flat-square"></a>
 <a href="https://github.com/neimad/temptree/blob/master/LICENSE.md"><img alt="License" src="https://img.shields.io/github/license/neimad/temptree?style=flat-square"></a></p>
-<p>The provided <a title="temptree.TemporaryTree" href="#temptree.TemporaryTree"><code>TemporaryTree</code></a> class allows to create complete files hierarchies under a
-root <code>tempfile.TemporaryDirectory</code>.</p>
+<p>The provided <a title="temptree.TemporaryTree" href="#temptree.TemporaryTree"><code>TemporaryTree</code></a> class allows to create complete files hierarchies
+under a root <code>tempfile.TemporaryDirectory</code>.</p>
 <p>It is well suited for usage within <em>doctests</em> :</p>
 <pre><code>&gt;&gt;&gt; from temptree import TemporaryTree
 
@@ -37,8 +37,8 @@ root <code>tempfile.TemporaryDirectory</code>.</p>
 True
 True
 </code></pre>
-<p>A complete file hierarchy can be easily created, including text files content and files
-mode:</p>
+<p>A complete file hierarchy can be easily created, including text files content
+and files mode:</p>
 <pre><code>&gt;&gt;&gt; with TemporaryTree({
 ...     "foo.py": ('''
 ...     import os
@@ -77,19 +77,20 @@ True
 <h2 id="documentation">Documentation</h2>
 <p><a href="https://neimad.github.io/temptree/">The complete documentation</a> is available from Github Pages.</p>
 <h2 id="development">Development</h2>
-<p>The development tasks are managed using <a href="https://www.pyinvoke.org/">Invoke</a>. Use it to list the available tasks:</p>
+<p>The development tasks are managed using <a href="https://www.pyinvoke.org/">Invoke</a>. Use it to list the available
+tasks:</p>
 <pre><code>inv -l
 </code></pre>
-<p>Use the <code>pre-commit</code> task within your repository <code>pre-commit</code> hook:</p>
-<pre><code>poetry run invoke pre-commit
+<p>Install the pre-commit hook within your repository:</p>
+<pre><code>poetry invoke pre-commit install
 </code></pre>
 <h2 id="contributing">Contributing</h2>
-<p>This project is hosted on <a href="https://github.com/neimad/temptree">Github</a>.</p>
+<p>This project is hosted on a <a href="https://github.com/neimad/temptree">Github repository</a>.</p>
 <p>If you're facing an issue using <a title="temptree" href="#temptree"><code>temptree</code></a>, please look at
 <a href="https://github.com/neimad/temptree/issues">the existing tickets</a>. Then you may open a new one.</p>
-<p>You may also make a <a href="https://github.com/neimad/temptree/pulls">push request</a> to help improve it.</p>
+<p>You may also <a href="https://github.com/neimad/temptree/pulls">make a push request</a> to help improve it.</p>
 <h2 id="license">License</h2>
-<p><a title="temptree" href="#temptree"><code>temptree</code></a> is licensed under the <a href="https://www.gnu.org/licenses/gpl.html">GNU GPL 3</a> or later.</p>
+<p><a title="temptree" href="#temptree"><code>temptree</code></a> is licensed under the <a href="https://github.com/neimad/temptree/blob/master/LICENSE.md">GNU GPL 3 or later</a>.</p>
 <details class="source">
 <summary>Source code</summary>
 <pre><code class="python"># SPDX-License-Identifier: GPL-3.0-or-later
@@ -101,10 +102,10 @@ True
 [![Build Status][ci-badge]][ci]
 [![PyPI][pypi-badge]][package]
 [![Python Version][py-versions-badge]][package]
-[![License][license-badge]][license]
+[![License][license-badge]][GNU GPL 3 or later]
 
-The provided `TemporaryTree` class allows to create complete files hierarchies under a
-root `tempfile.TemporaryDirectory`.
+The provided `TemporaryTree` class allows to create complete files hierarchies
+under a root `tempfile.TemporaryDirectory`.
 
 It is well suited for usage within *doctests* :
 
@@ -117,8 +118,8 @@ It is well suited for usage within *doctests* :
     True
     True
 
-A complete file hierarchy can be easily created, including text files content and files
-mode:
+A complete file hierarchy can be easily created, including text files content
+and files mode:
 
     &gt;&gt;&gt; with TemporaryTree({
     ...     &#34;foo.py&#34;: (&#39;&#39;&#39;
@@ -162,47 +163,49 @@ If you just need it within your *doctests*, add it as a development dependency:
 Documentation
 -------------
 
-[The complete documentation][documentation] is available from Github Pages.
+[The complete documentation] is available from Github Pages.
 
 Development
 -----------
 
-The development tasks are managed using [Invoke]. Use it to list the available tasks:
+The development tasks are managed using [Invoke]. Use it to list the available
+tasks:
 
     inv -l
 
-Use the `pre-commit` task within your repository `pre-commit` hook:
+Install the pre-commit hook within your repository:
 
-    poetry run invoke pre-commit
+    poetry invoke pre-commit install
 
 Contributing
 ------------
 
-This project is hosted on [Github][repository].
+This project is hosted on a [Github repository].
 
 If you&#39;re facing an issue using `temptree`, please look at
-[the existing tickets][issues]. Then you may open a new one.
+[the existing tickets]. Then you may open a new one.
 
-You may also make a [push request][pull-requests] to help improve it.
+You may also [make a push request] to help improve it.
 
 License
 -------
 
-`temptree` is licensed under the [GNU GPL 3][GPL] or later.
+`temptree` is licensed under the [GNU GPL 3 or later].
 
 [ci]: https://travis-ci.org/neimad/temptree
 [package]: https://pypi.org/project/temptree/
 [ci-badge]: https://img.shields.io/travis/neimad/temptree?style=flat-square
 [py-versions-badge]: https://img.shields.io/pypi/pyversions/temptree?style=flat-square
 [pypi-badge]: https://img.shields.io/pypi/v/temptree?style=flat-square
-[license]: https://github.com/neimad/temptree/blob/master/LICENSE.md
+
+[GNU GPL 3 or later]: https://github.com/neimad/temptree/blob/master/LICENSE.md
 [license-badge]: https://img.shields.io/github/license/neimad/temptree?style=flat-square
-[documentation]: https://neimad.github.io/temptree/
+[The complete documentation]: https://neimad.github.io/temptree/
+[Github repository]: https://github.com/neimad/temptree
+[the existing tickets]: https://github.com/neimad/temptree/issues
+[make a push request]: https://github.com/neimad/temptree/pulls
+
 [Invoke]: https://www.pyinvoke.org/
-[repository]: https://github.com/neimad/temptree
-[issues]: https://github.com/neimad/temptree/issues
-[pull-requests]: https://github.com/neimad/temptree/pulls
-[GPL]: https://www.gnu.org/licenses/gpl.html
 
 &#34;&#34;&#34;
 
@@ -903,7 +906,7 @@ False
 </nav>
 </main>
 <footer id="footer">
-<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.3</a>.</p>
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.6.4</a>.</p>
 </footer>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
 <script>hljs.initHighlightingOnLoad()</script>

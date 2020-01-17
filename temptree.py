@@ -7,10 +7,10 @@
 [![Build Status][ci-badge]][ci]
 [![PyPI][pypi-badge]][package]
 [![Python Version][py-versions-badge]][package]
-[![License][license-badge]][license]
+[![License][license-badge]][GNU GPL 3 or later]
 
-The provided `TemporaryTree` class allows to create complete files hierarchies under a
-root `tempfile.TemporaryDirectory`.
+The provided `TemporaryTree` class allows to create complete files hierarchies
+under a root `tempfile.TemporaryDirectory`.
 
 It is well suited for usage within *doctests* :
 
@@ -23,8 +23,8 @@ It is well suited for usage within *doctests* :
     True
     True
 
-A complete file hierarchy can be easily created, including text files content and files
-mode:
+A complete file hierarchy can be easily created, including text files content
+and files mode:
 
     >>> with TemporaryTree({
     ...     "foo.py": ('''
@@ -68,47 +68,49 @@ If you just need it within your *doctests*, add it as a development dependency:
 Documentation
 -------------
 
-[The complete documentation][documentation] is available from Github Pages.
+[The complete documentation] is available from Github Pages.
 
 Development
 -----------
 
-The development tasks are managed using [Invoke]. Use it to list the available tasks:
+The development tasks are managed using [Invoke]. Use it to list the available
+tasks:
 
     inv -l
 
-Use the `pre-commit` task within your repository `pre-commit` hook:
+Install the pre-commit hook within your repository:
 
-    poetry run invoke pre-commit
+    poetry invoke pre-commit install
 
 Contributing
 ------------
 
-This project is hosted on [Github][repository].
+This project is hosted on a [Github repository].
 
 If you're facing an issue using `temptree`, please look at
-[the existing tickets][issues]. Then you may open a new one.
+[the existing tickets]. Then you may open a new one.
 
-You may also make a [push request][pull-requests] to help improve it.
+You may also [make a push request] to help improve it.
 
 License
 -------
 
-`temptree` is licensed under the [GNU GPL 3][GPL] or later.
+`temptree` is licensed under the [GNU GPL 3 or later].
 
 [ci]: https://travis-ci.org/neimad/temptree
 [package]: https://pypi.org/project/temptree/
 [ci-badge]: https://img.shields.io/travis/neimad/temptree?style=flat-square
 [py-versions-badge]: https://img.shields.io/pypi/pyversions/temptree?style=flat-square
 [pypi-badge]: https://img.shields.io/pypi/v/temptree?style=flat-square
-[license]: https://github.com/neimad/temptree/blob/master/LICENSE.md
+
+[GNU GPL 3 or later]: https://github.com/neimad/temptree/blob/master/LICENSE.md
 [license-badge]: https://img.shields.io/github/license/neimad/temptree?style=flat-square
-[documentation]: https://neimad.github.io/temptree/
+[The complete documentation]: https://neimad.github.io/temptree/
+[Github repository]: https://github.com/neimad/temptree
+[the existing tickets]: https://github.com/neimad/temptree/issues
+[make a push request]: https://github.com/neimad/temptree/pulls
+
 [Invoke]: https://www.pyinvoke.org/
-[repository]: https://github.com/neimad/temptree
-[issues]: https://github.com/neimad/temptree/issues
-[pull-requests]: https://github.com/neimad/temptree/pulls
-[GPL]: https://www.gnu.org/licenses/gpl.html
 
 """
 
