@@ -20,7 +20,7 @@ before_install:
   - python -m pip install -U pip
   # Install Poetry
   - pip install poetry
-  - poetry config settings.virtualenvs.path "$VENVS_DIR"
+  - poetry config virtualenvs.path "$VENVS_DIR"
 
 install:
   - poetry install
