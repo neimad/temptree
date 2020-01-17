@@ -24,7 +24,7 @@ before_install:
 
 install:
   - poetry install
-  - poetry debug:info
+  - poetry debug
 
 script:
   - poetry run pre-commit run -a
