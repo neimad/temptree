@@ -90,22 +90,29 @@ If you're facing an issue using `temptree`, please look at
 
 You may also [make a push request] to help improve it.
 
+Changelog
+---------
+
+See [the changelog] to see what changes have been made and what you can expect
+in the next release.
+
 License
 -------
 
 `temptree` is licensed under the [GNU GPL 3 or later].
 
-[ci]: https://travis-ci.org/neimad/temptree
-[package]: https://pypi.org/project/temptree/
 [ci-badge]: https://img.shields.io/travis/neimad/temptree?style=flat-square
-[py-versions-badge]: https://img.shields.io/pypi/pyversions/temptree?style=flat-square
 [pypi-badge]: https://img.shields.io/pypi/v/temptree?style=flat-square
+[py-versions-badge]: https://img.shields.io/pypi/pyversions/temptree?style=flat-square
+[license-badge]: https://img.shields.io/github/license/neimad/temptree?style=flat-square
 
 [GNU GPL 3 or later]: https://github.com/neimad/temptree/blob/master/LICENSE.md
-[license-badge]: https://img.shields.io/github/license/neimad/temptree?style=flat-square
+[the changelog]: https://github.com/neimad/temptree/blob/master/CHANGELOG.md
 [The complete documentation]: https://neimad.github.io/temptree/
 [Github repository]: https://github.com/neimad/temptree
 [the existing tickets]: https://github.com/neimad/temptree/issues
 [make a push request]: https://github.com/neimad/temptree/pulls
+[package]: https://pypi.org/project/temptree/
+[ci]: https://travis-ci.org/neimad/temptree
 
 [Invoke]: https://www.pyinvoke.org/
