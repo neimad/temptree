@@ -1,4 +1,6 @@
-import: neimad/travis-python:dev.yml
+import:
+  - source: neimad/travis-python:dev.yml
+    mode: deep_merge_prepend
 
 env:
   matrix:
