@@ -1,19 +1,10 @@
-language: shell
-
-os:
-  - linux
-  - osx
-  - windows
-
-osx_image: xcode11
+import: neimad/travis-python:dev.yml
 
 env:
   matrix:
-    - PYTHON="3.8" HYPOTHESIS_MAX_EXAMPLES=100
-    - PYTHON="3.7" HYPOTHESIS_MAX_EXAMPLES=100
-    - PYTHON="3.6" HYPOTHESIS_MAX_EXAMPLES=100
-    # - PYTHON="3.7" HYPOTHESIS_MAX_EXAMPLES=100_000
-    # - PYTHON="3.6" HYPOTHESIS_MAX_EXAMPLES=100_000
+    - PYTHON="3.8"
+    - PYTHON="3.7"
+    - PYTHON="3.6"
   global:
     - CACHE=$HOME/cache
     - PYENV_ROOT=$CACHE/pyenv
@@ -23,9 +14,6 @@ env:
     - HYPOTHESIS_STORAGE_DIRECTORY=$CACHE/hypothesis
 
 before_install:
-  # Install Python
-  - source travis-python.bash
-  - install_python $CACHE/Python $PYTHON
   # Upgrade Pip
   - python -m pip install -U pip
   # Install Poetry
