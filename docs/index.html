@@ -77,12 +77,15 @@ True
 <h2 id="documentation">Documentation</h2>
 <p><a href="https://neimad.github.io/temptree/">The complete documentation</a> is available from Github Pages.</p>
 <h2 id="development">Development</h2>
-<p>The development tasks are managed using <a href="https://www.pyinvoke.org/">Invoke</a>. Use it to list the available
+<p>The development tasks are managed using <a href="https://pyinvoke.org">Invoke</a>. Use it to list the available
 tasks:</p>
-<pre><code>inv -l
+<pre><code>poetry run invoke --list
 </code></pre>
-<p>Install the pre-commit hook within your repository:</p>
-<pre><code>poetry invoke pre-commit install
+<p>Install the <a href="https://pre-commit.com">pre-commit</a> hook within your repository:</p>
+<pre><code>poetry run pre-commit install
+</code></pre>
+<p>Run the tests using <a href="https://pytest.org">Pytest</a>:</p>
+<pre><code>poetry run pytest
 </code></pre>
 <h2 id="contributing">Contributing</h2>
 <p>This project is hosted on a <a href="https://github.com/neimad/temptree">Github repository</a>.</p>
@@ -174,11 +177,15 @@ Development
 The development tasks are managed using [Invoke]. Use it to list the available
 tasks:
 
-    inv -l
+    poetry run invoke --list
 
-Install the pre-commit hook within your repository:
+Install the [pre-commit] hook within your repository:
 
-    poetry invoke pre-commit install
+    poetry run pre-commit install
+
+Run the tests using [Pytest]:
+
+    poetry run pytest
 
 Contributing
 ------------
@@ -215,7 +222,9 @@ License
 [package]: https://pypi.org/project/temptree/
 [ci]: https://travis-ci.org/neimad/temptree
 
-[Invoke]: https://www.pyinvoke.org/
+[Invoke]: https://pyinvoke.org
+[pre-commit]: https://pre-commit.com
+[Pytest]: https://pytest.org
 
 &#34;&#34;&#34;
 

@@ -74,11 +74,15 @@ Development
 The development tasks are managed using [Invoke]. Use it to list the available
 tasks:
 
-    inv -l
+    poetry run invoke --list
 
-Install the pre-commit hook within your repository:
+Install the [pre-commit] hook within your repository:
 
-    poetry invoke pre-commit install
+    poetry run pre-commit install
+
+Run the tests using [Pytest]:
+
+    poetry run pytest
 
 Contributing
 ------------
@@ -115,4 +119,6 @@ License
 [package]: https://pypi.org/project/temptree/
 [ci]: https://travis-ci.org/neimad/temptree
 
-[Invoke]: https://www.pyinvoke.org/
+[Invoke]: https://pyinvoke.org
+[pre-commit]: https://pre-commit.com
+[Pytest]: https://pytest.org
